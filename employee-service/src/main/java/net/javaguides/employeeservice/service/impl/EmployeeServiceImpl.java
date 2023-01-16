@@ -8,7 +8,7 @@ import net.javaguides.employeeservice.dto.EmployeeDto;
 import net.javaguides.employeeservice.entity.Employee;
 import net.javaguides.employeeservice.exception.EmployeeNotFoundException;
 import net.javaguides.employeeservice.repository.EmployeeRepository;
-import net.javaguides.employeeservice.service.APIClient;
+import net.javaguides.employeeservice.feignclient.DepartmentClient;
 import net.javaguides.employeeservice.service.EmployeeService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
     private ModelMapper modelMapper;
-    private APIClient apiClient;
+    private DepartmentClient departmentClient;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
@@ -47,7 +47,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 () -> new EmployeeNotFoundException("Employee", "id", employeeId)
         );
 
-        DepartmentDto departmentDto = apiClient.getDepartment(employee.getDepartmentCode());
+        DepartmentDto departmentDto = departmentClient.getDepartment(employee.getDepartmentCode());
 
         EmployeeDto employeeDto = modelMapper.map(employee, EmployeeDto.class);
 
