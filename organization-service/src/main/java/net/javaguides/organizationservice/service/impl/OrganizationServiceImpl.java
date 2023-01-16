@@ -23,4 +23,11 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         return modelMapper.map(saveOrganization, OrganizationDto.class);
     }
+
+    @Override
+    public OrganizationDto getOrganizationByCode(String organizationCode) {
+
+        Organization organization = organizationRepository.findByOrganizationCode(organizationCode);
+        return modelMapper.map(organization, OrganizationDto.class);
+    }
 }
