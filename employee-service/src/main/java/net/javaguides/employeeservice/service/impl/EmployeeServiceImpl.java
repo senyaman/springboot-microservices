@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import net.javaguides.employeeservice.dto.APIResponseDto;
 import net.javaguides.employeeservice.dto.DepartmentDto;
 import net.javaguides.employeeservice.dto.EmployeeDto;
+import net.javaguides.employeeservice.dto.OrganizationDto;
 import net.javaguides.employeeservice.entity.Employee;
 import net.javaguides.employeeservice.exception.EmployeeNotFoundException;
+import net.javaguides.employeeservice.feignclient.OrganizationClient;
 import net.javaguides.employeeservice.repository.EmployeeRepository;
 import net.javaguides.employeeservice.feignclient.DepartmentClient;
 import net.javaguides.employeeservice.service.EmployeeService;
@@ -22,6 +24,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
     private ModelMapper modelMapper;
     private DepartmentClient departmentClient;
+    private OrganizationClient organizationClient;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
@@ -49,9 +52,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         DepartmentDto departmentDto = departmentClient.getDepartment(employee.getDepartmentCode());
 
+        OrganizationDto organizationDto = organizationClient.getOrganizationByCode(employee.getOrganizationCode());
+
         EmployeeDto employeeDto = modelMapper.map(employee, EmployeeDto.class);
 
-        return new APIResponseDto(employeeDto, departmentDto);
+        return new APIResponseDto(employeeDto, departmentDto, organizationDto);
 
     }
 
@@ -70,7 +75,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         EmployeeDto employeeDto = modelMapper.map(employee, EmployeeDto.class);
 
-        return new APIResponseDto(employeeDto, departmentDto);
+        APIResponseDto apiResponseDto = new APIResponseDto();
+        apiResponseDto.setEmployeeDto(employeeDto);
+        apiResponseDto.setDepartmentDto(departmentDto);
+
+        return apiResponseDto;
 
     }
 
